@@ -40,29 +40,14 @@ namespace PenguinPushers.Components.MovementComponents
             var ifTargetIsTooClose = directionFromThisToTarget.magnitude < _moveAwayDistance;
             if (ifTargetIsTooClose)
             {
-                MoveAway(directionFromThisToTarget);
+                var destination = this.gameObject.transform.position +
+                                 directionFromThisToTarget.normalized * _moveAwayDistance;
+                _navMeshAgent.MoveTo(destination);
             }
             else
             {
-                StopMovement();
+                _navMeshAgent.StopMovement();
             }
-        }
-
-        private void MoveAway(Vector3 directionFromThisToTarget)
-        {
-            var detination = this.gameObject.transform.position +
-                             directionFromThisToTarget.normalized * _moveAwayDistance;
-
-            _navMeshAgent.isStopped = true;
-            this.InvokeActionAfterFirstFrame(() =>
-            {
-                _navMeshAgent.SetDestination(detination);
-                _navMeshAgent.isStopped = false;
-            });
-        }
-        private void StopMovement()
-        {
-            _navMeshAgent.isStopped = true;
         }
     }
 }
