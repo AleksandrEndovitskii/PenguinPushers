@@ -14,6 +14,7 @@ namespace PenguinPushers.Extensions
                 navMeshAgent.isStopped = false;
             });
         }
+
         public static void StopMovement(this NavMeshAgent navMeshAgent)
         {
             navMeshAgent.isStopped = true;

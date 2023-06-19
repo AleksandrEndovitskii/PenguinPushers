@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using PenguinPushers.Extensions;
 using UnityEngine;
 
 namespace PenguinPushers.Managers
@@ -52,7 +52,11 @@ namespace PenguinPushers.Managers
 
         private void StartTimer()
         {
-            _secondCountingCoroutine = StartCoroutine(SecondCountingCoroutine());
+            this.InvokeActionRepeatedly(() =>
+                {
+                    SecondsPassedCount++;
+                },
+                1f);
         }
         private void StopTimer()
         {
@@ -69,16 +73,6 @@ namespace PenguinPushers.Managers
             StopTimer();
 
             StartTimer();
-        }
-
-        private IEnumerator SecondCountingCoroutine()
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(1);
-
-                SecondsPassedCount++;
-            }
         }
     }
 }
