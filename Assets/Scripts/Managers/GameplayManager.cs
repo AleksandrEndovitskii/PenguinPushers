@@ -1,12 +1,20 @@
 using Cysharp.Threading.Tasks;
+using PenguinPushers.Utils;
 using PenguinPushers.Views;
 
 namespace PenguinPushers.Managers
 {
     public class GameplayManager : BaseManager<GameplayManager>
     {
-        protected override void Initialize()
+        private int _winGameScore;
+
+        protected override async void Initialize()
         {
+            await UniTask.WaitUntil(() => PenguinsManager.Instance != null &&
+                                          PenguinsManager.Instance.IsInitialized);
+
+            _winGameScore = PenguinsManager.Instance.PenguinViewInstancesInitialCount;
+
             IsInitialized = true;
         }
 
@@ -16,17 +24,43 @@ namespace PenguinPushers.Managers
 
         protected override async void Subscribe()
         {
+            await UniTask.WaitUntil(() => ScoreManager.Instance != null &&
+                                          ScoreManager.Instance.IsInitialized);
+
+            ScoreManager.Instance.ScoreChanged += ScoreManager_ScoreChanged;
+            ScoreManager_ScoreChanged(ScoreManager.Instance.Score);
+
             await UniTask.WaitUntil(() => CollisionHandlingManager.Instance != null &&
                                           CollisionHandlingManager.Instance.IsInitialized);
 
             CollisionHandlingManager.Instance.TriggerEnter += CollisionHandlingManager_TriggerEnter;
+
+            StartTheGame();
         }
 
         protected override void UnSubscribe()
         {
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.ScoreChanged -= ScoreManager_ScoreChanged;
+            }
+
             if (CollisionHandlingManager.Instance != null)
             {
                 CollisionHandlingManager.Instance.TriggerEnter -= CollisionHandlingManager_TriggerEnter;
+            }
+        }
+
+        private static void StartTheGame()
+        {
+            GameStateManager.Instance.GameState = GameState.InProgress;
+        }
+
+        private void ScoreManager_ScoreChanged(int score)
+        {
+            if (_winGameScore == score)
+            {
+                GameStateManager.Instance.GameState = GameState.Win;
             }
         }
 
