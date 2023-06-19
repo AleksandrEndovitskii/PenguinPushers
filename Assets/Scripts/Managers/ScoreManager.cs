@@ -1,4 +1,5 @@
 ﻿using System;
+using PenguinPushers.Helpers;
 using UnityEngine;
 
 namespace PenguinPushers.Managers
@@ -19,7 +20,7 @@ namespace PenguinPushers.Managers
                     return;
                 }
 
-                Debug.Log("{this.GetType().Name}.{ReflectionHelper.GetCallerMemberName()}" +
+                Debug.Log($"{this.GetType().Name}.{ReflectionHelper.GetCallerMemberName()}" +
                           $"\n{_score}->{value}");
                 _score = value;
 
