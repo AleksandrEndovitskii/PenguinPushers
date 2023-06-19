@@ -7,6 +7,7 @@ namespace PenguinPushers.Managers
     public class GameplayManager : BaseManager<GameplayManager>
     {
         private int _winGameScore;
+        private int _lossGameSecondsCount;
 
         protected override async void Initialize()
         {
@@ -14,6 +15,7 @@ namespace PenguinPushers.Managers
                                           PenguinsManager.Instance.IsInitialized);
 
             _winGameScore = PenguinsManager.Instance.PenguinViewInstancesInitialCount;
+            _lossGameSecondsCount = 30;
 
             IsInitialized = true;
         }
@@ -24,15 +26,18 @@ namespace PenguinPushers.Managers
 
         protected override async void Subscribe()
         {
+            await UniTask.WaitUntil(() => TimeManager.Instance != null &&
+                                          TimeManager.Instance.IsInitialized);
+            TimeManager.Instance.SecondsPassedCountChanged += TimeManager_SecondsPassedCountChanged;
+            TimeManager_SecondsPassedCountChanged(TimeManager.Instance.SecondsPassedCount);
+
             await UniTask.WaitUntil(() => ScoreManager.Instance != null &&
                                           ScoreManager.Instance.IsInitialized);
-
             ScoreManager.Instance.ScoreChanged += ScoreManager_ScoreChanged;
             ScoreManager_ScoreChanged(ScoreManager.Instance.Score);
 
             await UniTask.WaitUntil(() => CollisionHandlingManager.Instance != null &&
                                           CollisionHandlingManager.Instance.IsInitialized);
-
             CollisionHandlingManager.Instance.TriggerEnter += CollisionHandlingManager_TriggerEnter;
 
             StartTheGame();
@@ -40,6 +45,11 @@ namespace PenguinPushers.Managers
 
         protected override void UnSubscribe()
         {
+            if (TimeManager.Instance != null)
+            {
+                TimeManager.Instance.SecondsPassedCountChanged -= TimeManager_SecondsPassedCountChanged;
+            }
+
             if (ScoreManager.Instance != null)
             {
                 ScoreManager.Instance.ScoreChanged -= ScoreManager_ScoreChanged;
@@ -56,9 +66,17 @@ namespace PenguinPushers.Managers
             GameStateManager.Instance.GameState = GameState.InProgress;
         }
 
+        private void TimeManager_SecondsPassedCountChanged(int secondsPassedCount)
+        {
+            if (secondsPassedCount == _lossGameSecondsCount)
+            {
+                GameStateManager.Instance.GameState = GameState.Loss;
+            }
+        }
+
         private void ScoreManager_ScoreChanged(int score)
         {
-            if (_winGameScore == score)
+            if (score == _winGameScore)
             {
                 GameStateManager.Instance.GameState = GameState.Win;
             }
