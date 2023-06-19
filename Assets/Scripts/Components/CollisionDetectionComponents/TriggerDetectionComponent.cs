@@ -1,6 +1,6 @@
-﻿using PenguinPushers.Common;
-using PenguinPushers.Components.BaseComponents;
+﻿using PenguinPushers.Components.BaseComponents;
 using PenguinPushers.Managers;
+using PenguinPushers.Views;
 using UnityEngine;
 
 namespace PenguinPushers.Components.CollisionDetectionComponents

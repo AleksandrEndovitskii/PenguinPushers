@@ -1,6 +1,6 @@
 ﻿using System;
-using PenguinPushers.Common;
 using PenguinPushers.Helpers;
+using PenguinPushers.Views;
 using UnityEngine;
 
 namespace PenguinPushers.Managers

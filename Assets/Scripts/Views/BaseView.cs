@@ -1,5 +1,7 @@
-﻿using PenguinPushers.Components.BaseComponents;
-namespace PenguinPushers.Common
+﻿using PenguinPushers.Common;
+using PenguinPushers.Components.BaseComponents;
+
+namespace PenguinPushers.Views
 {
     public class BaseView<T> : BaseComponent, IView<T> where T : IModel
     {
