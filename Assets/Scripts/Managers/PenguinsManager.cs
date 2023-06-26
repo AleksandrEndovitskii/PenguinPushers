@@ -18,7 +18,8 @@ namespace PenguinPushers.Managers
 
         protected override void Initialize()
         {
-            PenguinViewInstancesInitialCount = _penguinViewInstances.Count;
+            // TODO: hardcoded magic number
+            PenguinViewInstancesInitialCount = 5;
 
             IsInitialized = true;
         }

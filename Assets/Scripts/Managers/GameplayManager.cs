@@ -26,6 +26,9 @@ namespace PenguinPushers.Managers
 
         protected override async void Subscribe()
         {
+            // TODO: fix async await of Initialize
+            await UniTask.WaitUntil(() => IsInitialized);
+
             await UniTask.WaitUntil(() => TimeManager.Instance != null &&
                                           TimeManager.Instance.IsInitialized);
             TimeManager.Instance.SecondsPassedCountChanged += TimeManager_SecondsPassedCountChanged;
