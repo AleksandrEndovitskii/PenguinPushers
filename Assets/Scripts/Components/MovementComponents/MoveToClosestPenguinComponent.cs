@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
+using Cysharp.Threading.Tasks;
 using PenguinPushers.Extensions;
+using PenguinPushers.Managers;
 using PenguinPushers.Views;
 using UnityEngine;
 
@@ -10,16 +11,27 @@ namespace PenguinPushers.Components.MovementComponents
     {
         private List<PenguinView> _penguinViews;
 
-        protected override void Initialize()
+        protected override async void Initialize()
         {
             base.Initialize();
 
-            _penguinViews = FindObjectsByType<PenguinView>(FindObjectsSortMode.None).ToList();
+            await UniTask.WaitUntil(() => PenguinsManager.Instance != null &&
+                                          PenguinsManager.Instance.IsInitialized);
+
+            _penguinViews = PenguinsManager.Instance.PenguinViewInstances;
         }
 
         protected override void MoveToTarget(Transform targets)
         {
             var penguinView = this.gameObject.transform.GetClosest(_penguinViews);
+
+            if (penguinView == null)
+            {
+                Target = null;
+                StopMovement();
+
+                return;
+            }
 
             Target = penguinView.transform;
 

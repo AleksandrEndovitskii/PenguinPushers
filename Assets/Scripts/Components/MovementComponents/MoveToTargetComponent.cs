@@ -10,6 +10,7 @@ namespace PenguinPushers.Components.MovementComponents
     [RequireComponent(typeof(NavMeshAgent))]
     public class MoveToTargetComponent : BaseComponent
     {
+        // TODO: replace Transform->GameObject?
         public event Action<Transform> TargetChanged = delegate { };
         public Transform Target
         {
@@ -67,8 +68,12 @@ namespace PenguinPushers.Components.MovementComponents
             }
             else
             {
-                _navMeshAgent.StopMovement();
+                StopMovement();
             }
+        }
+        protected void StopMovement()
+        {
+            _navMeshAgent.StopMovement();
         }
     }
 }

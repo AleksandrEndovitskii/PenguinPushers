@@ -1,5 +1,6 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using PenguinPushers.Helpers;
 using PenguinPushers.Views;
 using UnityEngine;
 
@@ -7,17 +8,16 @@ namespace PenguinPushers.Managers
 {
     public class PenguinsManager : BaseManager<PenguinsManager>
     {
-        [SerializeField]
         private List<PenguinView> _penguinViewInstances = new List<PenguinView>();
 
+        public List<PenguinView> PenguinViewInstances => _penguinViewInstances;
+
         // TODO: Replace by reactive property
+        [NonSerialized]
         public int PenguinViewInstancesInitialCount;
 
         protected override void Initialize()
         {
-            // TODO: Replace by dynamic instantiating from prefab
-            _penguinViewInstances = FindObjectsByType<PenguinView>(FindObjectsSortMode.None).ToList();
-
             PenguinViewInstancesInitialCount = _penguinViewInstances.Count;
 
             IsInitialized = true;
@@ -33,6 +33,21 @@ namespace PenguinPushers.Managers
 
         protected override void UnSubscribe()
         {
+        }
+
+        public void RegisterInstance(PenguinView penguinView)
+        {
+            Debug.Log($"{this.GetType().Name}.{ReflectionHelper.GetCallerMemberName()}" +
+                      $"\n{penguinView}=={penguinView}");
+
+            PenguinViewInstances.Add(penguinView);
+        }
+        public void UnRegisterInstance(PenguinView penguinView)
+        {
+            Debug.Log($"{this.GetType().Name}.{ReflectionHelper.GetCallerMemberName()}" +
+                      $"\n{penguinView}=={penguinView}");
+
+            PenguinViewInstances.Remove(penguinView);
         }
     }
 }
